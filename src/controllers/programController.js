@@ -1,7 +1,8 @@
 const { createProgram, 
         readPrograms, 
         deleteProgram, 
-        updateProgram } = require('../dao/programsDAO');
+        updateProgram,
+        readReports } = require('../dao/programsDAO');
 
 exports.createProgram = async (req, res) => {
     const confirm = await createProgram(req.body);
@@ -13,6 +14,14 @@ exports.createProgram = async (req, res) => {
 
 exports.listPograms = async (req, res) => {
     const data = await readPrograms()
+    if(data.error){
+        return res.status(400).json(data)
+    }
+    return res.json(data)
+}
+
+exports.readReports = async (req, res) => {
+    const data = await readReports()
     if(data.error){
         return res.status(400).json(data)
     }

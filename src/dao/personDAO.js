@@ -35,7 +35,14 @@ exports.PersonDAO = class {
 
     async readPerson(){
         try {
-            const data = await Person.find().populate("role")
+            const data = await Person.find()
+            .populate({
+                path: "role",
+                select: ["name"]
+            })
+            .sort({
+                name: 'asc'
+            })
             return data;
         } catch (err) {
             return {
@@ -46,10 +53,30 @@ exports.PersonDAO = class {
         }
     }
 
+    async deletePerson(_id){
+        try {
+            await Person.findOneAndDelete({_id})
+            return {
+                status: 1,
+                msg: "Persona eliminada"
+            };;
+        } catch (err) {
+            return {
+                error: errorHandler(err),
+                status: 0,
+                msg: "Error al eliminar"
+            }
+        }
+    }
+
     async readByRole(role){
         try {
-            let { _id } = await Role.findOne({'name' : role}, {_id: 1}).exec();
+            let { _id } = await Role.findOne({'name' : role}, {_id: 1})
+            .exec();
             const data = await Person.find({role: _id})
+            .sort({
+                name: 'asc'
+            })
             return data;
         } catch (err) {
             return {
@@ -62,7 +89,20 @@ exports.PersonDAO = class {
     
     async readByName(name){
         try {
-            const data = await Person.find({name})
+            const data = await Person.findOne({name})
+            return data;
+        } catch (err) {
+            return {
+                error: errorHandler(err),
+                status: 0,
+                msg: "Error al obtener persona"
+            }
+        }
+    }
+
+    async readById(_id){
+        try {
+            const data = await Person.findOne({_id})
             return data;
         } catch (err) {
             return {

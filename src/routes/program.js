@@ -5,11 +5,14 @@ const router = express.Router();
 const { createProgram,
         listPograms,
         updateProgram,
-        deleteProgram } = require('../controllers/programController');
+        deleteProgram,
+        readReports } = require('../controllers/programController');
 
 router.post('/', createProgram);
 
 router.get('/', listPograms);
+
+router.get('/reports', readReports);
 
 router.put('/', updateProgram);
 

@@ -19,6 +19,14 @@ exports.readPerson = async (req, res) => {
     return res.json(data)
 }
 
+exports.deletePerson = async (req, res) => {
+    const data = await personDAO.deletePerson(req.body._id)
+    if(data.error){
+        return res.status(400).json(data)
+    }
+    return res.json(data)
+}
+
 exports.readByRole = async (req, res) => {
     const data = await personDAO.readByRole(req.query.role)
     if(data.error){
@@ -28,7 +36,15 @@ exports.readByRole = async (req, res) => {
 }
 
 exports.readByName = async (req, res) => {
-    const data = await personDAO.readByName(req.body.name)
+    const data = await personDAO.readByName(req.query.name)
+    if(data.error){
+        return res.status(400).json(data)
+    }
+    return res.json(data)
+}
+
+exports.readById = async (req, res) => {
+    const data = await personDAO.readById(req.query.id)
     if(data.error){
         return res.status(400).json(data)
     }

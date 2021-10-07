@@ -16,8 +16,7 @@ const Program = new Schema({
      },
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     day: {
         type: Number,

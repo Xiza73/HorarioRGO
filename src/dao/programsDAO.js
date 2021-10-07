@@ -56,6 +56,25 @@ exports.readPrograms = async () => {
     }
 }
 
+exports.readReports = async () => {
+    try {
+        const data = await Program.find()
+        .populate({
+            path: "moderator",
+            select: "name -_id"
+        })
+        .select('moderatorReport -_id')
+        let d = data.filter((e) => e.moderator.name !== 'Sin Mod' && e.moderatorReport !== '')
+        return d;
+    } catch (err) {
+        return {
+            error: errorHandler(err),
+            status: 0,
+            msg: "Error al obtener programas"
+        }
+    }
+}
+
 exports.updateProgram = async (data) => {
     try{
         const { _id,
