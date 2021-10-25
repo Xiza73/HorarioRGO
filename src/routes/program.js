@@ -6,13 +6,16 @@ const { createProgram,
         listPograms,
         updateProgram,
         deleteProgram,
-        readReports } = require('../controllers/programController');
+        readReports,
+        cleanReports } = require('../controllers/programController');
 
 router.post('/', createProgram);
 
 router.get('/', listPograms);
 
 router.get('/reports', readReports);
+
+router.put('/reports', cleanReports);
 
 router.put('/', updateProgram);
 

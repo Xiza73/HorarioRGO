@@ -2,7 +2,8 @@ const { createProgram,
         readPrograms, 
         deleteProgram, 
         updateProgram,
-        readReports } = require('../dao/programsDAO');
+        readReports,
+        cleanReports } = require('../dao/programsDAO');
 
 exports.createProgram = async (req, res) => {
     const confirm = await createProgram(req.body);
@@ -38,6 +39,14 @@ exports.deleteProgram = async (req, res) => {
 
 exports.updateProgram = async (req, res) => {
     const confirm = await updateProgram(req.body);
+    if(confirm.error){
+        return res.status(400).json(confirm)
+    }
+    return res.json(confirm)
+}
+
+exports.cleanReports = async (req, res) => {
+    const confirm = await cleanReports();
     if(confirm.error){
         return res.status(400).json(confirm)
     }

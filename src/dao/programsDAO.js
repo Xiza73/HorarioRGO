@@ -58,13 +58,27 @@ exports.readPrograms = async () => {
 
 exports.readReports = async () => {
     try {
-        const data = await Program.find()
-        .populate({
-            path: "moderator",
-            select: "name -_id"
-        })
-        .select('moderatorReport -_id')
-        let d = data.filter((e) => e.moderator.name !== 'Sin Mod' && e.moderatorReport !== '')
+        const pipeline = [{$lookup: {
+            from: 'people',
+            localField: 'moderator',
+            foreignField: '_id',
+            as: 'mod'
+          }}, {$unwind: {
+            path: '$mod',
+          }}, {$addFields: {
+            'name': '$mod.name'
+          }}, {$project: {
+            '_id': 0,
+            'mod': 0
+          }}, {$sort: {
+            'day': 1,
+            'hourIni': 1
+          }}]
+
+        const data = await Program
+        .aggregate(pipeline)
+        .exec();
+        let d = data.filter((e) => e.name !== 'Sin Mod' && e.moderatorReport !== '')
         return d;
     } catch (err) {
         return {
@@ -136,6 +150,26 @@ exports.deleteProgram = async (body) => {
             error: errorHandler(err),
             status: 0,
             msg: "Error al eliminar datos"
+        }
+    }
+}
+
+exports.cleanReports = async () => {
+    try{
+        await Program.updateMany({}, {
+            $set: {
+                moderatorReport: ''
+            }
+        })
+        return {
+            status: 1,
+            msg: "Reportes limpios"
+        }
+    }catch(err){
+        return {
+            error: errorHandler(err),
+            status: 0,
+            msg: "Error al limpiar reportes"
         }
     }
 }
